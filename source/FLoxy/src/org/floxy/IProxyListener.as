@@ -1,6 +1,6 @@
 package org.floxy
 {
-	internal interface IProxyListener
+	public interface IProxyListener
 	{
 		function methodExecuted(target : Object, methodType : uint, methodName : String, arguments : Array, baseMethod : Function) : *;
 	}
