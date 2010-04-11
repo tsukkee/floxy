@@ -8,7 +8,7 @@ package org.floxy
 	import org.flemit.reflection.PropertyInfo;
 	import org.flemit.reflection.Type;
 	
-	internal class SimpleInvocation implements IInvocation
+	public class SimpleInvocation implements IInvocation
 	{
 		private var _args : Array;
 		
