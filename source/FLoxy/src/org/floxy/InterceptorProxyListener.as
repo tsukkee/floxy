@@ -2,7 +2,7 @@ package org.floxy
 {
 	import org.flemit.reflection.*;
 	
-	internal class InterceptorProxyListener implements IProxyListener
+	public class InterceptorProxyListener implements IProxyListener
 	{
 		private var _constructed : Boolean = false;
 		
