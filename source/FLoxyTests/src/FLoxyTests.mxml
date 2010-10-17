@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+	creationComplete="runMe()"
+	>
+     
+     <mx:Script>
+		<![CDATA[
+			import org.floxy.ProxyLoadingEvent;
+			import org.floxy.ProxyRepository;
+			import org.floxy.tests.GenerationSuite;
+
+			private var core:FlexUnitCore;
+			
+			private var _socket : Socket;
+			
+			private function runMe() : void
+			{
+				var proxyRepo : ProxyRepository = new ProxyRepository();
+				
+				/*
+				proxyRepo.addEventListener(ProxyLoadingEvent.PROXY_LOADING, function(e:ProxyLoadingEvent):void
+				{
+					e.preventDefault();
+					
+					_socket = new Socket();
+					_socket.connect("127.0.0.1", 30095);
+					_socket.addEventListener(Event.CONNECT, function(_:Event):void
+					{
+						_socket.writeBytes(e.data);
+						_socket.flush();
+						_socket.close();
+					});
+				});*/
+				
+				var result : IEventDispatcher = 
+					proxyRepo.prepare([INoPackageReferenceInterface], ApplicationDomain.currentDomain);
+			}
+     	]]>
+     </mx:Script>
+
+</mx:Application>

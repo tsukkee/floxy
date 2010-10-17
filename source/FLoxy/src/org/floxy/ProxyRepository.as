@@ -19,7 +19,7 @@ package org.floxy
 	/**
 	 * Prepares and creates instances of proxy implementations of classes and interfaces.
 	 */
-	public class ProxyRepository implements IProxyRepository
+	public class ProxyRepository extends EventDispatcher implements IProxyRepository
 	{
 		private var _proxyGenerator : ProxyGenerator;
 
@@ -143,6 +143,11 @@ package org.floxy
 					throw new IllegalOperationError("Private (package) classes are not supported. (feature request #2549289)");
 				}
 				
+				/*if (type.qname.ns.name == "")
+				{
+					throw new IllegalOperationError("Classes in the default package are not supported.");
+				}*/
+				
 				var qname : QualifiedName = generateQName(type);
 				
 				generatedNames[cls] = qname;
@@ -159,10 +164,14 @@ package org.floxy
 			var layout : IByteCodeLayout = layoutBuilder.createLayout();
 			
 			var loader : Loader = createSwf(layout, applicationDomain);
-			_loaders.push(loader);			
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, swfLoadedHandler);
-			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, swfErrorHandler);
-			loader.contentLoaderInfo.addEventListener(ErrorEvent.ERROR, swfErrorHandler);
+			
+			if (loader != null)
+			{
+				_loaders.push(loader);			
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, swfLoadedHandler);
+				loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, swfErrorHandler);
+				loader.contentLoaderInfo.addEventListener(ErrorEvent.ERROR, swfErrorHandler);
+			}
 			
 			var eventDispatcher : EventDispatcher = new EventDispatcher();
 			
@@ -218,10 +227,22 @@ package org.floxy
 			
 			enableAIRDynamicExecution(loaderContext);
 			
-			var loader : Loader = new Loader();
-			loader.loadBytes(buffer, loaderContext);
+			var loadingEvent : ProxyLoadingEvent = 
+				new ProxyLoadingEvent(buffer, loaderContext, ProxyLoadingEvent.PROXY_LOADING);
+				
+			dispatchEvent(loadingEvent);
 			
-			return loader;
+			if (loadingEvent.isDefaultPrevented())
+			{
+				return null;
+			}
+			else
+			{			
+				var loader : Loader = new Loader();
+				loader.loadBytes(buffer, loaderContext);
+			
+				return loader;
+			}
 		}
 		
 		private function enableAIRDynamicExecution(loaderContext : LoaderContext) : void
@@ -235,11 +256,22 @@ package org.floxy
 		
 		private function generateQName(type : Type) : QualifiedName
 		{
-			var ns : BCNamespace = (type.qname.ns.kind != NamespaceKind.PACKAGE_NAMESPACE)
-				? type.qname.ns
-				: BCNamespace.packageNS("asmock.generated");
+			var uniqueTypeName : String = type.name + GUID.create();
 			
-			return new QualifiedName(ns, type.name + GUID.create());
+			var ns : BCNamespace = null;
+			
+			if (type.qname.ns.name == "")
+			{
+				ns = new BCNamespace("asmock.generated", NamespaceKind.PROTECTED_NAMESPACE); 
+			}
+			else
+			{
+				ns = (type.qname.ns.kind != NamespaceKind.PACKAGE_NAMESPACE)
+					? type.qname.ns
+					: BCNamespace.packageNS("asmock.generated");
+			}
+			
+			return new QualifiedName(ns, uniqueTypeName);
 		}
 		
 		private function typeAlreadyPreparedFilter(cls : Class, index : int, array : Array) : Boolean

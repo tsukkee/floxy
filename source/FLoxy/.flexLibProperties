@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties version="1">
-<includeClasses>
-<classEntry path="org.floxy.IInvocation"/>
-<classEntry path="org.floxy.floxy_internal"/>
-<classEntry path="org.floxy.IInterceptor"/>
-<classEntry path="org.floxy.ProxyRepository"/>
-<classEntry path="org.floxy.IProxyRepository"/>
-</includeClasses>
-<includeResources/>
-<namespaceManifests/>
+  <includeClasses>
+    <classEntry path="org.floxy.IInterceptor"/>
+    <classEntry path="org.floxy.IInvocation"/>
+    <classEntry path="org.floxy.IProxyRepository"/>
+    <classEntry path="org.floxy.ProxyLoadingEvent"/>
+    <classEntry path="org.floxy.ProxyRepository"/>
+    <classEntry path="org.floxy.floxy_internal"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
 </flexLibProperties>
