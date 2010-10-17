@@ -6,7 +6,7 @@ package org.floxy
 	/**
 	 * Prepares and creates instances of proxy implementations of classes and interfaces.
 	 */
-	public interface IProxyRepository
+	public interface IProxyRepository extends IEventDispatcher
 	{
 		/**
 		 * Creates an instance of a proxy. The proxy must already have been 

@@ -17,6 +17,16 @@ package org.floxy
 		{
 			var superClass : Type = Type.getType(Object);
 			
+			var typeNamespace : BCNamespace = qname.ns;
+			
+			if (typeNamespace.kind == NamespaceKind.PROTECTED_NAMESPACE)
+			{
+				qname = new QualifiedName(
+					new BCNamespace(typeNamespace.name, NamespaceKind.PACKAGE_NAMESPACE),
+					qname.name
+					);
+			}
+			
 			var dynamicClass : DynamicClass = new DynamicClass(qname, superClass, interfaces);
 			
 			addInterfaceMembers(dynamicClass);
