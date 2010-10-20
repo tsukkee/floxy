@@ -5,6 +5,8 @@
      
      <mx:Script>
 		<![CDATA[
+			import org.floxy.tests.NoPackageClassGenerationFixture;
+			import org.flexunit.runner.FlexUnitCore;
 			import org.floxy.ProxyLoadingEvent;
 			import org.floxy.ProxyRepository;
 			import org.floxy.tests.GenerationSuite;

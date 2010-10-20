@@ -1,10 +1,12 @@
 package org.floxy.tests
 {
-	[TestCase]
+	//[TestCase]
+	
 	public class NoPackageClassGenerationFixture
 	{
-		[Test]
-		public function can_access_packageless_classes() : void
+		//[Test]
+		
+		public function testMethod() : void //can_access_packageless_classes() : void
 		{
 			
 		}
