@@ -38,7 +38,7 @@ package org.floxy
 			
 			dynamicClass.addSlot(new FieldInfo(dynamicClass, PROXY_FIELD_NAME, qname.toString() + "/" + PROXY_FIELD_NAME, MemberVisibility.PUBLIC, false, Type.getType(IProxyListener)));
 			
-			dynamicClass.addMethodBody(dynamicClass.scriptInitialiser, generateScriptInitialier(dynamicClass));
+			//dynamicClass.addMethodBody(dynamicClass.scriptInitialiser, generateScriptInitialier(dynamicClass));
 			dynamicClass.addMethodBody(dynamicClass.staticInitialiser, generateStaticInitialiser(dynamicClass));
 			dynamicClass.addMethodBody(dynamicClass.constructor, generateInitialiser(dynamicClass));
 			
@@ -210,7 +210,7 @@ package org.floxy
 				Type.star, params);
 		}
 		
-		private function generateScriptInitialier(dynamicClass : DynamicClass) : DynamicMethod
+		private function generateScriptInitialier(dynamicClass : Type) : DynamicMethod
 		{
 			var clsNamespaceSet : NamespaceSet = new NamespaceSet(
 				[new BCNamespace(dynamicClass.packageName, NamespaceKind.PACKAGE_NAMESPACE)]);
