@@ -16,6 +16,7 @@ package org.floxy
 	import org.flemit.util.ClassUtility;
 	import org.flemit.util.MethodUtil;
 	
+	[Event(name="proxyLoading", type="org.floxy.ProxyLoadingEvent")]
 	/**
 	 * Prepares and creates instances of proxy implementations of classes and interfaces.
 	 */
@@ -138,10 +139,12 @@ package org.floxy
 					throw new IllegalOperationError("Generic types (Vector) are not supported. (feature request #2599097)");
 				}
 				
+				/*
 				if (type.qname.ns.kind != NamespaceKind.PACKAGE_NAMESPACE)
 				{
 					throw new IllegalOperationError("Private (package) classes are not supported. (feature request #2549289)");
 				}
+				*/
 				
 				/*if (type.qname.ns.name == "")
 				{
@@ -155,6 +158,19 @@ package org.floxy
 				var dynamicClass : DynamicClass = (type.isInterface)
 					? _proxyGenerator.createProxyFromInterface(qname, [type])
 					: _proxyGenerator.createProxyFromClass(qname, type, []);
+					
+				if (type.qname.ns.kind == NamespaceKind.PRIVATE_NS)
+				{
+					if (type.isInterface)
+					{
+						layoutBuilder.registerType(DynamicClass.fromType(type));
+					}
+					else
+					{
+						return new ErrorEventDispatcher("Cannot create a proxy for "  + 
+							type.fullName + " because it is a private class (ie. declared outside a package). Only private interfaces are supported");
+					}
+				}
 
 				layoutBuilder.registerType(dynamicClass);
 			}
@@ -192,6 +208,7 @@ package org.floxy
 					
 					var fullName : String = qname.ns.name.concat('::', qname.name); 
 					
+					//var generatedClass : Class = getClassByAlias(fullName) as Class;
 					var generatedClass : Class = loader.contentLoaderInfo.applicationDomain.getDefinition(fullName) as Class;
 					
 					Type.getType(generatedClass);
@@ -266,9 +283,9 @@ package org.floxy
 			}
 			else
 			{
-				ns = (type.qname.ns.kind != NamespaceKind.PACKAGE_NAMESPACE)
+				ns = /*(type.qname.ns.kind != NamespaceKind.PACKAGE_NAMESPACE)
 					? type.qname.ns
-					: BCNamespace.packageNS("asmock.generated");
+					:*/ BCNamespace.packageNS("asmock.generated");
 			}
 			
 			return new QualifiedName(ns, uniqueTypeName);
@@ -283,6 +300,7 @@ package org.floxy
 	import flash.events.IEventDispatcher;
 	import flash.events.EventDispatcher;
 	import flash.events.Event;
+	import flash.events.ErrorEvent;
 	
 
 class CompletedEventDispatcher extends EventDispatcher
@@ -294,6 +312,28 @@ class CompletedEventDispatcher extends EventDispatcher
 		if (type == Event.COMPLETE)
 		{
 			dispatchEvent(new Event(Event.COMPLETE));
+			
+			super.removeEventListener(type, listener, useCapture);
+		}
+	}
+}
+
+class ErrorEventDispatcher extends EventDispatcher
+{
+	private var _errorMessage : String;
+	
+	public function ErrorEventDispatcher(errorMessage : String)
+	{
+		_errorMessage = errorMessage;
+	}
+	
+	public override function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void
+	{
+		super.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		
+		if (type == ErrorEvent.ERROR)
+		{
+			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, _errorMessage));
 			
 			super.removeEventListener(type, listener, useCapture);
 		}

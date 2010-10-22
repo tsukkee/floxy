@@ -2,7 +2,9 @@ package org.floxy
 {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
+	import flash.system.LoaderContext;
 	
+	[Event(name="proxyLoading", type="org.floxy.ProxyLoadingEvent")]
 	/**
 	 * Prepares and creates instances of proxy implementations of classes and interfaces.
 	 */
