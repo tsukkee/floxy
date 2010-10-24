@@ -1,8 +1,6 @@
 package org.floxy.tests
 {
-	import org.floxy.tests.integration.NoPackageClassSupportFixture;
-	import org.floxy.tests.integration.PrivateClassSupportFixture;
-	import org.floxy.tests.integration.PrivateInterfaceSupportFixture;
+	import org.floxy.tests.integration.*;
 	
 	[Suite]
 	[RunWith("org.flexunit.runners.Suite")]
@@ -11,6 +9,7 @@ package org.floxy.tests
 		public var privateInterface : PrivateInterfaceSupportFixture;
 		public var privateClass : PrivateClassSupportFixture;
 		
+		public var noPackageInterface : NoPackageInterfaceSupportFixture;
 		public var noPackageClass : NoPackageClassSupportFixture;
 	}
 }

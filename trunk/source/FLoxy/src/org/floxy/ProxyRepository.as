@@ -7,6 +7,7 @@ package org.floxy
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
 	import org.flemit.*;
@@ -208,8 +209,9 @@ package org.floxy
 					
 					var fullName : String = qname.ns.name.concat('::', qname.name); 
 					
-					//var generatedClass : Class = getClassByAlias(fullName) as Class;
-					var generatedClass : Class = loader.contentLoaderInfo.applicationDomain.getDefinition(fullName) as Class;
+					var generatedClass : Class = 
+						getDefinitionByName(fullName) as Class;
+						//loader.contentLoaderInfo.applicationDomain.getDefinition(fullName) as Class;
 					
 					Type.getType(generatedClass);
 					

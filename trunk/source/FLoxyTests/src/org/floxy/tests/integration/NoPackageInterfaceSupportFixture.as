@@ -9,12 +9,11 @@ package org.floxy.tests.integration
 	import org.floxy.IProxyRepository;
 	import org.floxy.ProxyRepository;
 	import org.floxy.tests.*;
-	import org.floxy.tests.util.ProxyRepositoryUtil;
 	
 	[TestCase]
-	public class NoPackageClassSupportFixture
+	public class NoPackageInterfaceSupportFixture
 	{
-		private var _proxyRepository : ProxyRepository;
+		private var _proxyRepository : IProxyRepository;
 		
 		[Before(async)]
 		public function setupProxy() : void
@@ -22,7 +21,7 @@ package org.floxy.tests.integration
 			_proxyRepository = new ProxyRepository();
 			
 			var result : IEventDispatcher = 
-					_proxyRepository.prepare([NoPackageReferenceClass], ApplicationDomain.currentDomain);
+					_proxyRepository.prepare([INoPackageReferenceInterface], ApplicationDomain.currentDomain);
 					
 			result.addEventListener(Event.COMPLETE, Async.asyncHandler(this, function(... args):void
 			{
@@ -35,8 +34,8 @@ package org.floxy.tests.integration
 		{
 			var interceptor : MockIntercepter = new MockIntercepter();
 			
-			var a : NoPackageReferenceClass =
-				NoPackageReferenceClass(_proxyRepository.create(NoPackageReferenceClass, [], interceptor));
+			var a : INoPackageReferenceInterface =
+				INoPackageReferenceInterface(_proxyRepository.create(INoPackageReferenceInterface, [], interceptor));
 			
 			a.getValue();
 			
