@@ -62,6 +62,16 @@ package org.floxy
 		
 		public function createProxyFromClass(qname : QualifiedName, superClass : Type, interfaces : Array) : DynamicClass
 		{
+			var typeNamespace : BCNamespace = qname.ns;
+			
+			if (typeNamespace.kind == NamespaceKind.PROTECTED_NAMESPACE)
+			{
+				qname = new QualifiedName(
+					new BCNamespace(typeNamespace.name, NamespaceKind.PACKAGE_NAMESPACE),
+					qname.name
+					);
+			}
+			
 			var dynamicClass : DynamicClass = new DynamicClass(qname, superClass, interfaces);
 			
 			var method : MethodInfo;
