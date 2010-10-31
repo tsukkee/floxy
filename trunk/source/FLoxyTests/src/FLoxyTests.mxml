@@ -5,6 +5,7 @@
      
      <mx:Script>
 		<![CDATA[
+			import org.floxy.tests.integration.FinalClassSupportFixture;
 			import org.floxy.tests.integration.NoPackageClassSupportFixture;
 			import org.floxy.tests.IntegrationSuite;
 			
