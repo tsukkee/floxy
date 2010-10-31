@@ -11,17 +11,17 @@ package org.floxy.tests.integration
 	import org.floxy.tests.*;
 	
 	[TestCase]
-	public class PrivateClassSupportFixture
+	public class FinalClassSupportFixture
 	{
 		private var _proxyRepository : IProxyRepository;
 
 		[Test(async, expected="ArgumentError")]
-		public function private_classes_are_not_supported() : void
+		public function final_classes_are_not_supported() : void
 		{
 			_proxyRepository = new ProxyRepository();
 			
 			var result : IEventDispatcher = 
-					_proxyRepository.prepare([PrivateClass], ApplicationDomain.currentDomain);
+					_proxyRepository.prepare([FinalClass], ApplicationDomain.currentDomain);
 					
 			result.addEventListener(ErrorEvent.ERROR, Async.asyncHandler(this, function(e:ErrorEvent, ... args):void
 			{
@@ -31,12 +31,3 @@ package org.floxy.tests.integration
 		}
 	}
 }
-	import org.floxy.tests.integration.IInterfaceB;
-	import org.floxy.tests.integration.IInterfaceA;
-	
-class PrivateClass implements IInterfaceA, IInterfaceB
-{
-	public function getValueA() : int { return 0; }
-	public function getValueB() : int { return 0; }
-}
-

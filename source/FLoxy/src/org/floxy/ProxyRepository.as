@@ -1,7 +1,6 @@
 package org.floxy
 {
 	import flash.display.Loader;
-	import flash.errors.IllegalOperationError;
 	import flash.events.*;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
@@ -137,20 +136,18 @@ package org.floxy
 				
 				if (type.isGeneric || type.isGenericTypeDefinition)
 				{
-					throw new IllegalOperationError("Generic types (Vector) are not supported. (feature request #2599097)");
+					throw new ArgumentError("Generic types (Vector) are not supported. (feature request #2599097)");
 				}
 				
-				/*
-				if (type.qname.ns.kind != NamespaceKind.PACKAGE_NAMESPACE)
+				if (type.isFinal)
 				{
-					throw new IllegalOperationError("Private (package) classes are not supported. (feature request #2549289)");
+					// describeType says that packageless classes are final  
+					if (type.qname.ns.name != "")
+					{
+						throw new ArgumentError("Cannot create a proxy for "  + 
+							type.fullName + " because it is marked as final");
+					}
 				}
-				*/
-				
-				/*if (type.qname.ns.name == "")
-				{
-					throw new IllegalOperationError("Classes in the default package are not supported.");
-				}*/
 				
 				var qname : QualifiedName = generateQName(type);
 				
@@ -168,7 +165,7 @@ package org.floxy
 					}
 					else
 					{
-						return new ErrorEventDispatcher("Cannot create a proxy for "  + 
+						throw new ArgumentError("Cannot create a proxy for "  + 
 							type.fullName + " because it is a private class (ie. declared outside a package). Only private interfaces are supported");
 					}
 				}
