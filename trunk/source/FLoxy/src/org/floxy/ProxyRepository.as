@@ -139,7 +139,7 @@ package org.floxy
 					throw new ArgumentError("Generic types (Vector) are not supported. (feature request #2599097)");
 				}
 				
-				if (type.isFinal)
+				/*if (type.isFinal)
 				{
 					// describeType says that packageless classes are final  
 					if (type.qname.ns.name != "")
@@ -147,7 +147,7 @@ package org.floxy
 						throw new ArgumentError("Cannot create a proxy for "  + 
 							type.fullName + " because it is marked as final");
 					}
-				}
+				}*/
 				
 				var qname : QualifiedName = generateQName(type);
 				
