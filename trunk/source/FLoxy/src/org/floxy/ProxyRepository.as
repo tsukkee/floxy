@@ -11,6 +11,9 @@ package org.floxy
 	
 	import org.flemit.*;
 	import org.flemit.bytecode.*;
+	import org.flemit.reflection.MemberVisibility;
+	import org.flemit.reflection.MethodInfo;
+	import org.flemit.reflection.ParameterInfo;
 	import org.flemit.reflection.Type;
 	import org.flemit.tags.*;
 	import org.flemit.util.ClassUtility;
@@ -48,6 +51,11 @@ package org.floxy
 		 */
 		public function create(cls : Class, args : Array, interceptor : IInterceptor) : Object
 		{
+			if (cls == Function)
+			{
+				return createFunctionProxy(interceptor) as Object;
+			}
+			
 			var proxyClass : Class = _proxies[cls];
 			
 			if (proxyClass == null)
@@ -85,6 +93,28 @@ package org.floxy
 			}
 		}
 		
+		private function createFunctionProxy(interceptor : IInterceptor) : Function
+		{
+			var methodInfo : MethodInfo = new MethodInfo(null, 
+					"<anonymous function>", "<anonymous function>",
+					 MemberVisibility.PUBLIC, true, false, Type.star,
+					[new ParameterInfo("args", Type.star, true)]
+			 		);
+			
+			var func : Function;
+			
+			func = function(... args) : *
+			{
+				var invocation : FunctionInvocation = new FunctionInvocation(func, methodInfo, args);
+				
+				interceptor.intercept(invocation);
+				
+				return invocation.returnValue;
+			};
+			
+			return func;
+		}
+		
 		/**
 		 * Prepares proxies for multiple classes into the specified application domain. 
 		 * 
@@ -117,7 +147,8 @@ package org.floxy
 			applicationDomain = applicationDomain 
 				|| new ApplicationDomain(ApplicationDomain.currentDomain);
 			
-			classes = classes.filter(typeAlreadyPreparedFilter);
+			classes = classes
+				.filter(typeCanMePreparedFilter);
 			
 			if (classes.length == 0) 
 			{
@@ -290,9 +321,20 @@ package org.floxy
 			return new QualifiedName(ns, uniqueTypeName);
 		}
 		
+		private function typeCanMePreparedFilter(cls : Class, index : int, array : Array) : Boolean
+		{
+			return typeAlreadyPreparedFilter(cls, index, array) &&
+					typeIsNotFunction(cls, index, array);	
+		}
+		
 		private function typeAlreadyPreparedFilter(cls : Class, index : int, array : Array) : Boolean
 		{
 			return (_proxies[cls] == null);
+		}
+		
+		private function typeIsNotFunction(cls : Class, index : int, array : Array) : Boolean
+		{
+			return (cls != Function);
 		}
 	}
 }
@@ -337,4 +379,9 @@ class ErrorEventDispatcher extends EventDispatcher
 			super.removeEventListener(type, listener, useCapture);
 		}
 	}
+}
+
+interface IAnonymousFunction
+{
+	function call(... args ) : Object;
 }

@@ -6,6 +6,13 @@ package org.floxy.tests.integration
 	public class MockIntercepter implements IInterceptor
 	{
 		private var _invocations : Array = new Array();
+		
+		private var _interceptCallback : Function;
+		
+		public function MockIntercepter(interceptCallback : Function = null)
+		{
+			_interceptCallback = interceptCallback;
+		}
 	
 		public function get invocationCount() : int
 		{
@@ -20,6 +27,11 @@ package org.floxy.tests.integration
 		public function intercept(invocation : IInvocation) : void
 		{
 			_invocations.push(invocation);
+			
+			if (_interceptCallback != null)
+			{
+				_interceptCallback(invocation);
+			}
 		}
 	}
 }

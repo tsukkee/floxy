@@ -12,6 +12,8 @@ package org.floxy.tests
 		public var noPackageInterface : NoPackageInterfaceSupportFixture;
 		public var noPackageClass : NoPackageClassSupportFixture;
 		
+		public var functionSupport : FunctionSupportFixture;
+		
 		//public var finalClassSupport : FinalClassSupportFixture;
 	}
 }
